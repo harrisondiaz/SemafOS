@@ -12,14 +12,15 @@ empty = threading.Semaphore(CAPACITY)
 full = threading.Semaphore(0)
 buffer_used = 0
 
-
 class Producer(threading.Thread):
+    """A class representing a producer thread."""
     def __init__(self, name, output_label, gui_instance):
         super().__init__(name=name)
         self.output_label = output_label
         self.gui_instance = gui_instance
 
     def run(self):
+        """The main function of the producer thread."""
         global CAPACITY, buffer, in_index, out_index, counter, buffer_used
         global mutex, empty, full
 
@@ -45,12 +46,14 @@ class Producer(threading.Thread):
 
 
 class Consumer(threading.Thread):
+    """A class representing a consumer thread."""
     def __init__(self, name, output_label, gui_instance):
         super().__init__(name=name)
         self.output_label = output_label
         self.gui_instance = gui_instance
 
     def run(self):
+        """The main function of the consumer thread."""
         global CAPACITY, buffer, in_index, out_index, counter, buffer_used
         global mutex, empty, full
 
@@ -74,7 +77,12 @@ class Consumer(threading.Thread):
 
             items_consumed += 1
 
+
 class ProducerConsumerGUI:
+    """
+        A GUI for visualizing the producer-consumer problem.
+
+        """
     def __init__(self, buffer_size, num_producers, num_consumers):
         self.root = Tk()
         self.root.title("Productor-Consumidor")
@@ -87,6 +95,7 @@ class ProducerConsumerGUI:
         self.create_widgets()
 
     def create_widgets(self):
+        """Creates the widgets for the GUI."""
         mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         self.root.columnconfigure(0, weight=1)
@@ -121,6 +130,7 @@ class ProducerConsumerGUI:
         self.start_threads()
 
     def start_threads(self):
+        """Starts the producer and consumer threads."""
         for i in range(self.num_producers):
             producer_thread = Producer(f"Productor {i + 1}", self.producer_labels[i], self)
             producer_thread.start()
@@ -132,6 +142,7 @@ class ProducerConsumerGUI:
             self.consumer_threads.append(consumer_thread)
 
     def stop_threads(self):
+        """Stops the producer and consumer threads."""
         for producer_thread in self.producer_threads:
             producer_thread.join()
 
@@ -141,20 +152,24 @@ class ProducerConsumerGUI:
         self.root.destroy()
 
     def run(self):
+        """Runs the GUI."""
         self.root.mainloop()
 
     def update_buffer_used_label(self):
+        """Updates the buffer used label."""
         buffer_used_var = f"{buffer_used}/{self.buffer_size}"
         self.buffer_used_value_label.config(text=buffer_used_var)
 
 
 class ConfigWindow:
+    """ A window for configuring the producer-consumer problem."""
     def __init__(self):
         self.root = Tk()
         self.root.title("Configuración Productor-Consumidor")
         self.create_widgets()
 
     def create_widgets(self):
+        """Creates the widgets for the configuration window."""
         mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         self.root.columnconfigure(0, weight=1)
@@ -179,6 +194,7 @@ class ConfigWindow:
         start_button.grid(column=1, row=3, sticky=W)
 
     def start_app(self):
+        """Starts the producer-consumer GUI."""
         buffer_size = int(self.buffer_size_var.get())
         num_producers = int(self.num_producers_var.get())
         num_consumers = int(self.num_consumers_var.get())
@@ -188,9 +204,11 @@ class ConfigWindow:
         app.run()
 
     def run(self):
+        """Runs the configuration window."""
         self.root.mainloop()
 
 def main():
+    """Main function."""
     config_window = ConfigWindow()
     config_window.run()
 
